@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Desktop Wire EDM | Digital Twin & Simulation Dashboard</title>
+    
+    <!-- Google Fonts: Outfit for crisp modern UI, JetBrains Mono for tech logs & charts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Core CSS stylesheet -->
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="glow-backdrop"></div>
+    
+    <div class="app-container">
+        <!-- HEADER MODULE -->
+        <header class="app-header">
+            <div class="header-logo">
+                <div class="logo-icon"></div>
+                <div class="logo-text">
+                    <h1>ELECTRO-ARC</h1>
+                    <span>DESKTOP WIRE EDM • DIGITAL TWIN</span>
+                </div>
+            </div>
+            
+            <div class="system-status-panel">
+                <div class="telemetry-compact">
+                    <span class="label">FREQUENCY</span>
+                    <span id="header-frequency" class="value text-cyan">45.5 kHz</span>
+                </div>
+                <div class="telemetry-compact">
+                    <span class="label">DUTY CYCLE</span>
+                    <span id="header-duty" class="value text-amber">16.7%</span>
+                </div>
+                <div class="status-indicator armed">
+                    <div class="pulse-ring"></div>
+                    <div class="status-dot"></div>
+                    <span class="status-text">SUBMERGED & ARMED</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- MAIN LAB BODY -->
+        <main class="app-body">
+            <!-- COLUMN 1: PARAMETER CONTROL PANEL -->
+            <section class="panel glass-panel" id="controls-panel">
+                <div class="panel-header">
+                    <h2><span class="icon">⚙️</span> CONTROL CONSOLE</h2>
+                    <span class="sub-header">System Input & Calibration</span>
+                </div>
+                
+                <div class="control-group">
+                    <label class="control-label">WORKPIECE MATERIAL</label>
+                    <div class="material-grid">
+                        <button class="material-btn active" data-material="aluminum">
+                            <span class="bullet al"></span> Aluminum
+                        </button>
+                        <button class="material-btn" data-material="steel">
+                            <span class="bullet st"></span> Tool Steel
+                        </button>
+                        <button class="material-btn" data-material="brass">
+                            <span class="bullet br"></span> Brass
+                        </button>
+                        <button class="material-btn" data-material="copper">
+                            <span class="bullet cu"></span> Copper
+                        </button>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <div class="slider-header">
+                        <label class="control-label">PULSE-ON TIME (T<sub>on</sub>)</label>
+                        <span class="slider-value" id="val-ton">12 μs</span>
+                    </div>
+                    <input type="range" id="slider-ton" class="custom-slider" min="2" max="100" value="12">
+                    <div class="slider-bounds"><span>2 μs</span><span>100 μs</span></div>
+                </div>
+
+                <div class="control-group">
+                    <div class="slider-header">
+                        <label class="control-label">PULSE-OFF TIME (T<sub>off</sub>)</label>
+                        <span class="slider-value" id="val-toff">60 μs</span>
+                    </div>
+                    <input type="range" id="slider-toff" class="custom-slider" min="5" max="500" value="60">
+                    <div class="slider-bounds"><span>5 μs</span><span>500 μs</span></div>
+                </div>
+
+                <div class="control-group">
+                    <div class="slider-header">
+                        <label class="control-label">GAP DISCHARGE VOLTAGE</label>
+                        <span class="slider-value" id="val-voltage">60 V</span>
+                    </div>
+                    <input type="range" id="slider-voltage" class="custom-slider" min="20" max="80" value="60">
+                    <div class="slider-bounds"><span>20 V</span><span>80 V</span></div>
+                </div>
+
+                <div class="control-group">
+                    <div class="slider-header">
+                        <label class="control-label">PEAK CURRENT (I<sub>p</sub>)</label>
+                        <span class="slider-value" id="val-current">2.5 A</span>
+                    </div>
+                    <input type="range" id="slider-current" class="custom-slider" min="0.5" max="5.0" step="0.1" value="2.5">
+                    <div class="slider-bounds"><span>0.5 A</span><span>5.0 A</span></div>
+                </div>
+
+                <div class="control-group">
+                    <div class="slider-header">
+                        <label class="control-label">FEED RATE SPEED</label>
+                        <span class="slider-value" id="val-feedrate">0.8 mm/min</span>
+                    </div>
+                    <input type="range" id="slider-feedrate" class="custom-slider" min="0.1" max="3.0" step="0.1" value="0.8">
+                    <div class="slider-bounds"><span>0.1 mm/min</span><span>3.0 mm/min</span></div>
+                </div>
+
+                <div class="control-group">
+                    <label class="control-label">PRESET MACHINING TOOLPATH</label>
+                    <select id="select-toolpath" class="custom-select">
+                        <option value="square">Micro-Gear Profile</option>
+                        <option value="sine">Complex Waveform Spline</option>
+                        <option value="grid">Orthogonal Heat-Sink Fin</option>
+                        <option value="antigravity">Precision Antigravity Logo</option>
+                    </select>
+                </div>
+
+                <div class="control-actions">
+                    <button id="btn-start" class="btn btn-primary">⚡ START EROSION</button>
+                    <button id="btn-reset" class="btn btn-secondary">🔄 RESET STAGE</button>
+                </div>
+            </section>
+
+            <!-- COLUMN 2: ACTIVE MACHINING CHAMBER (SIMULATOR) -->
+            <section class="panel glass-panel central-panel" id="simulator-panel">
+                <div class="panel-header space-between">
+                    <div>
+                        <h2><span class="icon">🌀</span> CHAMBER VISUALIZER</h2>
+                        <span class="sub-header">2D Real-Time Erosion Submersion Tank</span>
+                    </div>
+                    <div class="chamber-telemetry">
+                        <span id="telemetry-coord">X: 0.00 mm | Y: 0.00 mm</span>
+                    </div>
+                </div>
+                
+                <div class="canvas-container">
+                    <canvas id="edm-canvas"></canvas>
+                    <div class="dielectric-overlay"></div>
+                    <div class="spark-flash" id="spark-flash"></div>
+                    
+                    <div class="scale-indicator">
+                        <div class="scale-bar"></div>
+                        <span>10 mm (Micro Scale)</span>
+                    </div>
+                </div>
+                
+                <div class="simulation-telemetry-grid">
+                    <div class="telemetry-card">
+                        <span class="card-label">STAGE MOVEMENT</span>
+                        <div class="progress-bar-container">
+                            <div id="machining-progress" class="progress-bar" style="width: 0%"></div>
+                        </div>
+                        <span id="progress-text" class="card-value">IDLE (0.0%)</span>
+                    </div>
+                    <div class="telemetry-card">
+                        <span class="card-label">WIRE STABILITY</span>
+                        <span id="wire-tension-status" class="card-value text-green">STABLE TENSION</span>
+                    </div>
+                    <div class="telemetry-card">
+                        <span class="card-label">DIELECTRIC STATE</span>
+                        <span id="dielectric-temp" class="card-value text-cyan">24.2 °C (DI WATER)</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- COLUMN 3: OSCILLO-LAB & TELEMETRY -->
+            <section class="panel glass-panel" id="oscilloscope-panel">
+                <div class="panel-header">
+                    <h2><span class="icon">📈</span> PULSE OSCILLO-LAB</h2>
+                    <span class="sub-header">IGBT Switch Waveform Modeler</span>
+                </div>
+
+                <div class="oscilloscope-container">
+                    <div class="scope-grid-labels">
+                        <span>Amplitude (V)</span>
+                        <span>Time (t)</span>
+                    </div>
+                    <svg id="scope-svg" viewBox="0 0 500 200">
+                        <!-- Grid lines -->
+                        <line x1="0" y1="50" x2="500" y2="50" class="scope-grid" />
+                        <line x1="0" y1="100" x2="500" y2="100" class="scope-grid" />
+                        <line x1="0" y1="150" x2="500" y2="150" class="scope-grid" />
+                        
+                        <line x1="100" y1="0" x2="100" y2="200" class="scope-grid" />
+                        <line x1="200" y1="0" x2="200" y2="200" class="scope-grid" />
+                        <line x1="300" y1="0" x2="300" y2="200" class="scope-grid" />
+                        <line x1="400" y1="0" x2="400" y2="200" class="scope-grid" />
+                        
+                        <!-- Oscilloscope Paths -->
+                        <!-- 1. PWM Gate Switching Line (Red) -->
+                        <path id="path-pwm" class="scope-line pwm-line" d="" />
+                        
+                        <!-- 2. Gap voltage erosion curve (Cyan) -->
+                        <path id="path-voltage" class="scope-line voltage-line" d="" />
+                        
+                        <!-- 3. Current bursts (Yellow) -->
+                        <path id="path-current" class="scope-line current-line" d="" />
+                    </svg>
+                    
+                    <div class="scope-legends">
+                        <span class="legend"><span class="color-dot pwm"></span> Gate Switch (5V Logic)</span>
+                        <span class="legend"><span class="color-dot voltage"></span> Gap Voltage (60V DC)</span>
+                        <span class="legend"><span class="color-dot current"></span> Discharge Current (A)</span>
+                    </div>
+                </div>
+
+                <div class="telemetry-list">
+                    <div class="telemetry-row">
+                        <span class="item-label">EROSION FREQUENCY</span>
+                        <span id="tel-frequency" class="item-value text-cyan">45.45 kHz</span>
+                    </div>
+                    <div class="telemetry-row">
+                        <span class="item-label">PWM DUTY CYCLE</span>
+                        <span id="tel-duty" class="item-value text-cyan">16.67 %</span>
+                    </div>
+                    <div class="telemetry-row">
+                        <span class="item-label">ENERGY PER SPARK</span>
+                        <span id="tel-energy" class="item-value text-cyan">1.13 mJ</span>
+                    </div>
+                    <div class="telemetry-row">
+                        <span class="item-label">EST. METAL REMOVAL RATE (MRR)</span>
+                        <span id="tel-mrr" class="item-value text-cyan">0.24 mm³/min</span>
+                    </div>
+                    <div class="telemetry-row highlight-row">
+                        <span class="item-label">IGBT PCB HEAT LOAD</span>
+                        <span id="tel-igbt-temp" class="item-value text-green">38.4 °C (SAFE)</span>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- SYSTEM ARCHITECTURE SECTION -->
+        <footer class="app-footer">
+            <section class="panel glass-panel full-width-panel" id="architecture-panel">
+                <div class="panel-header">
+                    <h2><span class="icon">🏗️</span> INTERACTIVE HARDWARE SCHEMATIC EXPLORER</h2>
+                    <span class="sub-header">Click on a block to load components data sheet</span>
+                </div>
+                
+                <div class="schematic-wrapper">
+                    <!-- Block Diagram -->
+                    <div class="block-diagram">
+                        <div class="diagram-node node-power" data-block="power60v">
+                            <span class="node-title">60V DC Supply</span>
+                            <span class="node-subtitle">Erosion Source</span>
+                        </div>
+                        
+                        <div class="diagram-connector arrow-right"></div>
+                        
+                        <div class="diagram-node node-pcb" data-block="sparkpcb">
+                            <span class="node-title">Spark Generator PCB</span>
+                            <span class="node-subtitle">IGBT Switching Module</span>
+                        </div>
+                        
+                        <div class="diagram-connector arrow-right"></div>
+                        
+                        <div class="diagram-node node-mechanics" data-block="electrode">
+                            <span class="node-title">Brass Wire & Toolhead</span>
+                            <span class="node-subtitle">Discharge Gap (0.25mm)</span>
+                        </div>
+                        
+                        <div class="diagram-connector arrow-down-left"></div>
+                        <div class="diagram-connector arrow-down-right"></div>
+                        
+                        <div class="diagram-node node-control" data-block="arduino">
+                            <span class="node-title">Arduino Uno</span>
+                            <span class="node-subtitle">CNC logic & PWM</span>
+                        </div>
+                        
+                        <div class="diagram-node node-motor" data-block="motors">
+                            <span class="node-title">Stepper & NEMA 17</span>
+                            <span class="node-subtitle">X/Y Linear Gantry</span>
+                        </div>
+                    </div>
+
+                    <!-- Selected Component Information Panel -->
+                    <div class="component-info-card" id="comp-card">
+                        <h3 id="comp-title">Arduino Uno (Controller)</h3>
+                        <div class="comp-meta">
+                            <span class="comp-badge" id="comp-role">CENTRAL PROCESSOR</span>
+                        </div>
+                        <p id="comp-desc">The central intelligence unit of the Desktop Wire EDM. Loaded with micro-CNC coordinates firmware, it coordinates motor multi-axis step signals and synchronizes the high-frequency gate timing line for pulsed spark erosion.</p>
+                        
+                        <div class="comp-specs-grid" id="comp-specs">
+                            <div class="spec-item">
+                                <span class="spec-label">Processor</span>
+                                <span class="spec-value" id="spec-1">ATmega328P</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Clock Speed</span>
+                                <span class="spec-value" id="spec-2">16 MHz</span>
+                            </div>
+                            <div class="spec-item">
+                                <span class="spec-label">Operation</span>
+                                <span class="spec-value" id="spec-3">LaserGRBL Coordinate Maps</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </footer>
+    </div>
+    
+    <script src="app.js"></script>
+</body>
+</html>
