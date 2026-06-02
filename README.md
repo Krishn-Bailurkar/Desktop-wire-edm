@@ -2,6 +2,8 @@
 
 This repository contains the complete documentation, mechanical specifications, and system architecture for a **compact, low-cost, desktop Wire Electrical Discharge Machining (Wire EDM) platform**. Developed as a scalable alternative to industrial-grade machinery, this project delivers micro-machining capabilities for conductive materials within small-scale workshops, research facilities, and academic laboratories.
 
+🌐 **[Launch Live Digital Twin & Simulator Dashboard](https://krishn-bailurkar.github.io/Desktop-wire-edm/)**
+
 ---
 
 ## 📋 Table of Contents
@@ -89,8 +91,8 @@ This repository features a **Live Interactive Digital Twin & Simulation Dashboar
 * **Interactive System Explorer**: An interactive block layout displaying mechanical and electronic components with structural parameters and function data on click.
 
 > [!TIP]
-> **Host it Live on GitHub Pages:**
-> To explore the simulator directly in your browser, host this repository on GitHub Pages by going to **Settings > Pages > Source > Deploy from a branch (main)**.
+> **Explore the Live Dashboard:**
+> To run the simulator and oscillscope right now, click here: **[Launch Live Digital Twin](https://krishn-bailurkar.github.io/Desktop-wire-edm/)** (or configure GitHub Pages under Settings > Pages in your repository).
 
 ---
 
